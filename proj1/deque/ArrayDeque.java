@@ -57,8 +57,9 @@ public class ArrayDeque<itemType> {
         if (array.length > 16 && size < array.length / 4) {
             resize(array.length / 2);
         }
-        itemType result = array[nextFront + 1];
-        array[nextFront + 1] = null;
+        int resultIndex = (nextFront + 1) % array.length;
+        itemType result = array[resultIndex];
+        array[resultIndex] = null;
         size -= 1;
         return result;
     }
