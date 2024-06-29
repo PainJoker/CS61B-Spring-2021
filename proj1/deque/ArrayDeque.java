@@ -82,7 +82,7 @@ public class ArrayDeque<itemType> {
         if (index < 0 || index >= size) {
             return null;
         }
-        return array[(nextFront + 1 + index) % array.length];
+        return array[(nextFront + 1) % array.length];
     }
 
     public void printDeque() {
