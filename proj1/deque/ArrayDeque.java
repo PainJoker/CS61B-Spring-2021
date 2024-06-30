@@ -14,8 +14,8 @@ public class ArrayDeque<itemType> {
     }
 
     public ArrayDeque(ArrayDeque<itemType> other) {
-        array = (itemType[]) new Object[other.size() * 2];
-        nextFront = other.size() * 2 - 1;
+        array = (itemType[]) new Object[other.size()];
+        nextFront = other.size() - 1;
         nextRear = 0;
         for (int i = 0; i < other.size(); i++) {
             itemType item = other.get(i);
@@ -37,7 +37,7 @@ public class ArrayDeque<itemType> {
         }
         array[nextFront] = item;
         // source: https://stackoverflow.com/questions/4412179/best-way-to-make-javas-modulus-behave-like-it-should-with-negative-numbers
-        nextFront = ((nextFront - 1) % array.length + array.length) % array.length;
+        moveToNextFront();
         size += 1;
     }
 
@@ -46,7 +46,7 @@ public class ArrayDeque<itemType> {
             resize(array.length * 2);
         }
         array[nextRear] = item;
-        nextRear = (nextRear + 1) % array.length;
+        moveToNextRear();
         size += 1;
     }
 
@@ -57,10 +57,11 @@ public class ArrayDeque<itemType> {
         if (array.length > 16 && size < array.length / 4) {
             resize(array.length / 2);
         }
-        int resultIndex = (nextFront + 1) % array.length;
+        int resultIndex = frontIndex();
         itemType result = array[resultIndex];
         array[resultIndex] = null;
         size -= 1;
+        nextFront = (nextFront + 1) % array.length;
         return result;
     }
 
@@ -71,10 +72,11 @@ public class ArrayDeque<itemType> {
         if (array.length > 16 && size < array.length / 4) {
             resize(array.length / 2);
         }
-        int resultIndex = ((nextRear - 1) + array.length) % array.length;
+        int resultIndex = rearIndex();
         itemType result = array[resultIndex];
         array[resultIndex] = null;
         size -= 1;
+        nextRear = ((nextRear - 1 + array.length) % array.length);
         return result;
     }
 
@@ -82,26 +84,36 @@ public class ArrayDeque<itemType> {
         if (index < 0 || index >= size) {
             return null;
         }
-        return array[(nextFront + 1) % array.length];
+        return array[(nextFront + index + 1) % array.length];
     }
 
     public void printDeque() {
         if (isEmpty()) {
             return;
         }
-        for (int i = (nextFront + 1) % array.length; i != nextRear; i = (i + 1) % array.length) {
-            System.out.print(array[i]);
+        int i = frontIndex();
+        for (int j = 0; j < size; j++) {
+            System.out.print(get(i));
             System.out.print(" ");
+            i = (i + 1) % array.length;
         }
         System.out.println();
     }
 
     private int frontIndex() {
-        return ((nextFront - 1) + array.length) % array.length;
+        return (nextFront + 1) % array.length;
     }
 
     private int rearIndex() {
-        return (nextRear + 1) % array.length;
+        return (nextRear -1 + array.length) % array.length;
+    }
+
+    private void moveToNextFront() {
+        nextFront = (nextFront -1 + array.length) % array.length;
+    }
+
+    private void moveToNextRear() {
+        nextRear = (nextRear + 1) % array.length;
     }
 
     private boolean isFull() {
@@ -110,11 +122,11 @@ public class ArrayDeque<itemType> {
 
     private void resize(int capacity) {
         itemType[] newArray = (itemType[]) new Object[capacity];
-        for (int i = (nextFront + 1) % array.length, j = 0; i != nextRear; i = (i + 1) % array.length, j++) {
+        for (int i = 0, j = frontIndex(); i < size; i++, j++) {
             newArray[i] = array[j];
         }
         array = newArray;
-        nextFront = capacity;
+        nextFront = capacity - 1;
         nextRear = size;
     }
 }

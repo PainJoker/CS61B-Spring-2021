@@ -66,8 +66,8 @@ public class ArrayDequeTest {
     /* Check if you can create ArrayDeque with different parameterized types*/
     public void multipleParamTest() {
 
-        ArrayDeque<String>  ad1 = new ArrayDeque<String>();
-        ArrayDeque<Double>  ad2 = new ArrayDeque<Double>();
+        ArrayDeque<String> ad1 = new ArrayDeque<String>();
+        ArrayDeque<Double> ad2 = new ArrayDeque<Double>();
         ArrayDeque<Boolean> ad3 = new ArrayDeque<Boolean>();
 
         ad1.addFirst("string");
@@ -78,7 +78,7 @@ public class ArrayDequeTest {
         double d = ad2.removeFirst();
         boolean b = ad3.removeFirst();
     }
-    
+
     @Test
     /* check if null is return when removing from an empty LinkedListDeque. */
     public void emptyNullReturnTest() {
@@ -92,6 +92,7 @@ public class ArrayDequeTest {
 
     }
 
+    @Test
     public void bigLLDequeTest() {
 
         ArrayDeque<Integer> ad1 = new ArrayDeque<>();
@@ -106,19 +107,22 @@ public class ArrayDequeTest {
         for (double i = 999999; i > 500000; i--) {
             assertEquals("Should have the same value", i, (double) ad1.removeLast(), 0.0);
         }
-
     }
 
     @Test
     public void deepCopyTest() {
         ArrayDeque<Integer> deque = new ArrayDeque<>();
-        deque.addFirst(1);
-        deque.addFirst(2);
-        deque.addLast(3);
+        for (int i = 0; i < 40; i++) {
+            deque.addLast(i);
+        }
+        for (int i = 0; i < 40; i++) {
+            assertEquals(i, (double) deque.get(i), 0.0);
+        }
         ArrayDeque<Integer> copyed = new ArrayDeque<>(deque);
-        System.out.print("Copyed: ");
-        copyed.printDeque();
-        System.out.print("Deque: ");
-        deque.printDeque();
+        for (int i = 0; i < 30; i++) {
+            int dequeResult = deque.removeFirst();
+            int copyedResult = copyed.removeFirst();
+            assertEquals(dequeResult, copyedResult);
+        }
     }
 }
