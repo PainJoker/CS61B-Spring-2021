@@ -1,24 +1,24 @@
 package deque;
 
-public class ArrayDeque<itemType> implements Deque<itemType> {
-    private itemType[] array;
+public class ArrayDeque<T> implements Deque<T> {
+    private T[] array;
     private int size;
     private int nextFront;
     private int nextRear;
 
     public ArrayDeque() {
-        array = (itemType[]) new Object[8];
+        array = (T[]) new Object[8];
         nextFront = 7;
         nextRear = 0;
         size = 0;
     }
 
-    public ArrayDeque(ArrayDeque<itemType> other) {
-        array = (itemType[]) new Object[other.size()];
+    public ArrayDeque(ArrayDeque<T> other) {
+        array = (T[]) new Object[other.size()];
         nextFront = other.size() - 1;
         nextRear = 0;
         for (int i = 0; i < other.size(); i++) {
-            itemType item = other.get(i);
+            T item = other.get(i);
             addLast(item);
         }
     }
@@ -29,18 +29,18 @@ public class ArrayDeque<itemType> implements Deque<itemType> {
     }
 
     @Override
-    public void addFirst(itemType item) {
+    public void addFirst(T item) {
         if (isFull()) {
             resize(array.length * 2);
         }
         array[nextFront] = item;
-        // source: https://stackoverflow.com/questions/4412179/best-way-to-make-javas-modulus-behave-like-it-should-with-negative-numbers
+        // source: stackoverflow
         moveToNextFront();
         size += 1;
     }
 
     @Override
-    public void addLast(itemType item) {
+    public void addLast(T item) {
         if (isFull()) {
             resize(array.length * 2);
         }
@@ -50,7 +50,7 @@ public class ArrayDeque<itemType> implements Deque<itemType> {
     }
 
     @Override
-    public itemType removeFirst() {
+    public T removeFirst() {
         if (isEmpty()) {
             return null;
         }
@@ -58,7 +58,7 @@ public class ArrayDeque<itemType> implements Deque<itemType> {
             resize(array.length / 2);
         }
         int resultIndex = frontIndex();
-        itemType result = array[resultIndex];
+        T result = array[resultIndex];
         array[resultIndex] = null;
         size -= 1;
         nextFront = (nextFront + 1) % array.length;
@@ -66,7 +66,7 @@ public class ArrayDeque<itemType> implements Deque<itemType> {
     }
 
     @Override
-    public itemType removeLast() {
+    public T removeLast() {
         if (isEmpty()) {
             return null;
         }
@@ -74,7 +74,7 @@ public class ArrayDeque<itemType> implements Deque<itemType> {
             resize(array.length / 2);
         }
         int resultIndex = rearIndex();
-        itemType result = array[resultIndex];
+        T result = array[resultIndex];
         array[resultIndex] = null;
         size -= 1;
         nextRear = ((nextRear - 1 + array.length) % array.length);
@@ -82,7 +82,7 @@ public class ArrayDeque<itemType> implements Deque<itemType> {
     }
 
     @Override
-    public itemType get(int index) {
+    public T get(int index) {
         if (index < 0 || index >= size) {
             return null;
         }
@@ -108,11 +108,11 @@ public class ArrayDeque<itemType> implements Deque<itemType> {
     }
 
     private int rearIndex() {
-        return (nextRear -1 + array.length) % array.length;
+        return (nextRear - 1 + array.length) % array.length;
     }
 
     private void moveToNextFront() {
-        nextFront = (nextFront -1 + array.length) % array.length;
+        nextFront = (nextFront - 1 + array.length) % array.length;
     }
 
     private void moveToNextRear() {
@@ -124,7 +124,7 @@ public class ArrayDeque<itemType> implements Deque<itemType> {
     }
 
     private void resize(int capacity) {
-        itemType[] newArray = (itemType[]) new Object[capacity];
+        T[] newArray = (T[]) new Object[capacity];
         for (int i = 0, j = frontIndex(); i < size; i++, j++) {
             newArray[i] = array[j];
         }
