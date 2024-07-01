@@ -1,9 +1,6 @@
 package deque;
 
 import org.junit.Test;
-
-import java.sql.Array;
-
 import static org.junit.Assert.*;
 
 public class ArrayDequeTest {

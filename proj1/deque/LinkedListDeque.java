@@ -1,6 +1,6 @@
 package deque;
 
-public class LinkedListDeque<itemType> {
+public class LinkedListDeque<itemType> implements Deque<itemType> {
     private Node<itemType> sentinel;
     private int size;
     public LinkedListDeque() {
@@ -22,14 +22,12 @@ public class LinkedListDeque<itemType> {
         }
     }
 
-    public boolean isEmpty() {
-        return size == 0 && sentinel.next == sentinel.prev;
-    }
-
+    @Override
     public int size() {
         return size;
     }
 
+    @Override
     public void addFirst(itemType item) {
         Node<itemType> newItem = new Node<>(item, sentinel, sentinel.next);
         sentinel.next.prev = newItem;
@@ -37,6 +35,7 @@ public class LinkedListDeque<itemType> {
         size += 1;
     }
 
+    @Override
     public void addLast(itemType item) {
         Node<itemType> newItem = new Node<>(item, sentinel.prev, sentinel);
         sentinel.prev.next = newItem;
@@ -44,6 +43,7 @@ public class LinkedListDeque<itemType> {
         size += 1;
     }
 
+    @Override
     public itemType removeFirst() {
         if (isEmpty()) {
             return null;
@@ -56,6 +56,7 @@ public class LinkedListDeque<itemType> {
         return removedItem;
     }
 
+    @Override
     public itemType removeLast() {
         if (isEmpty()) {
             return null;
@@ -68,11 +69,12 @@ public class LinkedListDeque<itemType> {
         return removedItem;
     }
 
+    @Override
     public itemType get(int index) {
         if (index < 0 || index >= size) {
             return null;
         }
-        Node<itemType> node = sentinel;
+        Node<itemType> node = sentinel.next;
         for (int i = 0; i < index; i++) {
             node = node.next;
         }
@@ -94,6 +96,7 @@ public class LinkedListDeque<itemType> {
         }
     }
 
+    @Override
     public void printDeque() {
         Node<itemType> current = sentinel;
         while (current.next != sentinel) {
@@ -115,5 +118,4 @@ public class LinkedListDeque<itemType> {
             this.next = next;
         }
     }
-
 }

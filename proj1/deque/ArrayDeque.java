@@ -1,6 +1,6 @@
 package deque;
 
-public class ArrayDeque<itemType> {
+public class ArrayDeque<itemType> implements Deque<itemType> {
     private itemType[] array;
     private int size;
     private int nextFront;
@@ -23,14 +23,12 @@ public class ArrayDeque<itemType> {
         }
     }
 
-    public boolean isEmpty() {
-        return size == 0;
-    }
-
+    @Override
     public int size() {
         return size;
     }
 
+    @Override
     public void addFirst(itemType item) {
         if (isFull()) {
             resize(array.length * 2);
@@ -41,6 +39,7 @@ public class ArrayDeque<itemType> {
         size += 1;
     }
 
+    @Override
     public void addLast(itemType item) {
         if (isFull()) {
             resize(array.length * 2);
@@ -50,6 +49,7 @@ public class ArrayDeque<itemType> {
         size += 1;
     }
 
+    @Override
     public itemType removeFirst() {
         if (isEmpty()) {
             return null;
@@ -65,6 +65,7 @@ public class ArrayDeque<itemType> {
         return result;
     }
 
+    @Override
     public itemType removeLast() {
         if (isEmpty()) {
             return null;
@@ -80,6 +81,7 @@ public class ArrayDeque<itemType> {
         return result;
     }
 
+    @Override
     public itemType get(int index) {
         if (index < 0 || index >= size) {
             return null;
@@ -87,6 +89,7 @@ public class ArrayDeque<itemType> {
         return array[(nextFront + index + 1) % array.length];
     }
 
+    @Override
     public void printDeque() {
         if (isEmpty()) {
             return;
