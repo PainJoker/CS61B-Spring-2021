@@ -1,5 +1,6 @@
 package deque;
 
+import edu.princeton.cs.algs4.StdRandom;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -121,5 +122,65 @@ public class ArrayDequeTest {
             int copyedResult = copyed.removeFirst();
             assertEquals(dequeResult, copyedResult);
         }
+    }
+
+    @Test
+    public void randomTest() {
+        ArrayDeque<Integer> deque = new ArrayDeque<>();
+
+        int testNum = 100000;
+        for (int i = 0; i < testNum; i++) {
+            int operationIdx = StdRandom.uniform(0, 4);
+            if (operationIdx == 0) {
+                deque.addFirst(i);
+            } else if (operationIdx == 1) {
+                deque.addLast(i);
+            } else if (operationIdx == 2) {
+                deque.removeFirst();
+            } else if (operationIdx == 3) {
+                deque.removeLast();
+            }
+        }
+    }
+
+    @Test
+    public void iteratorTest() {
+        ArrayDeque<Integer> deque = new ArrayDeque<>();
+
+        for (int i = 0; i < 10; i++) {
+            deque.addLast(i);
+        }
+
+        int idx = 0;
+        for (int i : deque) {
+            assertEquals(i, idx);
+            idx++;
+        }
+
+        while (!deque.isEmpty()) {
+            deque.removeFirst();
+        }
+
+        for (int i : deque) {
+            assertNull("Should return null", i);
+        }
+    }
+
+    @Test
+    public void equalsTest() {
+        ArrayDeque<Integer> deque = new ArrayDeque<>();
+
+        for (int i = 0; i < 10; i++) {
+            deque.addLast(i);
+        }
+
+        assertNotEquals(null, deque);
+        assertNotEquals("String Test", deque);
+
+        ArrayDeque<Integer> deque2 = new ArrayDeque<>();
+        for (int i = 0; i < 10; i++) {
+            deque2.addLast(i);
+        }
+        assertTrue(deque.equals(deque2));
     }
 }

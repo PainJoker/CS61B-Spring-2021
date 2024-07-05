@@ -1,5 +1,6 @@
 package deque;
 
+import edu.princeton.cs.algs4.StdRandom;
 import org.junit.Test;
 import java.util.Comparator;
 import static org.junit.Assert.*;
@@ -40,5 +41,4 @@ public class MaxArrayDequeTest {
         }
         assertEquals(49, (int) testArray.max());
     }
-
 }

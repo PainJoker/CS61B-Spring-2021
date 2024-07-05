@@ -1,23 +1,25 @@
 package deque;
 
-public class LinkedListDeque<T> implements Deque<T> {
+import java.util.Iterator;
+
+public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     private Node<T> sentinel;
     private int size;
     public LinkedListDeque() {
         size = 0;
-        sentinel = new Node<T>(null, null, null);
+        sentinel = new Node<>(null, null, null);
         sentinel.prev = sentinel;
         sentinel.next = sentinel.prev;
     }
 
-    public LinkedListDeque(LinkedListDeque other) {
+    public LinkedListDeque(LinkedListDeque<T> other) {
         size = 0;
-        sentinel = new Node<T>(null, null, null);
+        sentinel = new Node<>(null, null, null);
         sentinel.prev = sentinel;
         sentinel.next = sentinel.prev;
-        Node temp = other.sentinel;
+        Node<T> temp = other.sentinel;
         while (temp.next != other.sentinel) {
-            addLast((T) temp.next.item);
+            addLast(temp.next.item);
             temp = temp.next;
         }
     }
@@ -107,6 +109,30 @@ public class LinkedListDeque<T> implements Deque<T> {
         System.out.println();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+        if (this.getClass() != o.getClass()) {
+            return false;
+        }
+        if (size != ((LinkedListDeque<?>) o).size()) {
+            return false;
+        }
+        for (int i = 0; i < size; i++) {
+            if (!this.get(i).equals(((LinkedListDeque<?>) o).get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new LLDIterator();
+    }
+
     private static class Node<T> {
         private T item;
         private Node<T> prev;
@@ -116,6 +142,26 @@ public class LinkedListDeque<T> implements Deque<T> {
             this.item = item;
             this.prev = prev;
             this.next = next;
+        }
+    }
+
+    private class LLDIterator implements Iterator<T> {
+        private Node<T> wizard;
+
+        public LLDIterator() {
+            wizard = sentinel.next;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return wizard != sentinel;
+        }
+
+        @Override
+        public T next() {
+            T val = wizard.item;
+            wizard = wizard.next;
+            return val;
         }
     }
 }

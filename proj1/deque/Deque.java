@@ -3,13 +3,11 @@ package deque;
 public interface Deque<T> {
     /**
      * Add item to the first(index = 0) position.
-     * @param item
      */
     void addFirst(T item);
 
     /**
      * Add item to the last position.
-     * @param item
      */
     void addLast(T item);
 

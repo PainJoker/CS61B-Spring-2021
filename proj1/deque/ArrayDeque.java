@@ -1,6 +1,8 @@
 package deque;
 
-public class ArrayDeque<T> implements Deque<T> {
+import java.util.Iterator;
+
+public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     private T[] array;
     private int size;
     private int nextFront;
@@ -90,6 +92,11 @@ public class ArrayDeque<T> implements Deque<T> {
     }
 
     @Override
+    public Iterator<T> iterator() {
+        return new ADIterator();
+    }
+
+    @Override
     public void printDeque() {
         if (isEmpty()) {
             return;
@@ -101,6 +108,28 @@ public class ArrayDeque<T> implements Deque<T> {
             i = (i + 1) % array.length;
         }
         System.out.println();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+        if (this.getClass() != o.getClass()) {
+            return false;
+        }
+        if (size != ((ArrayDeque<?>) o).size()) {
+            return false;
+        }
+        if (size != ((ArrayDeque<?>) o).size()) {
+            return false;
+        }
+        for (int i = 0; i < size; i++) {
+            if (!this.get(i).equals(((ArrayDeque<?>) o).get(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private int frontIndex() {
@@ -125,11 +154,31 @@ public class ArrayDeque<T> implements Deque<T> {
 
     private void resize(int capacity) {
         T[] newArray = (T[]) new Object[capacity];
-        for (int i = 0, j = frontIndex(); i < size; i++, j++) {
+        for (int i = 0, j = frontIndex(); i < size; i++, j = (j + 1) % array.length) {
             newArray[i] = array[j];
         }
         array = newArray;
         nextFront = capacity - 1;
         nextRear = size;
+    }
+
+    private class ADIterator implements Iterator<T> {
+        private int wizard;
+
+        ADIterator() {
+            wizard = frontIndex();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return wizard < nextRear;
+        }
+
+        @Override
+        public T next() {
+            T val = get(wizard);
+            wizard = (wizard + 1) % array.length;
+            return val;
+        }
     }
 }

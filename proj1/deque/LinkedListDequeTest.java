@@ -1,5 +1,6 @@
 package deque;
 
+import edu.princeton.cs.algs4.StdRandom;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -151,5 +152,65 @@ public class LinkedListDequeTest {
         }
         assertEquals(0, deque.size());
         assertEquals(0, copyed.size());
+    }
+
+    @Test
+    public void randomTest() {
+        LinkedListDeque<Integer> deque = new LinkedListDeque<>();
+
+        int testNum = 100000;
+        for (int i = 0; i < testNum; i++) {
+            int operationIdx = StdRandom.uniform(0, 4);
+            if (operationIdx == 0) {
+                deque.addFirst(i);
+            } else if (operationIdx == 1) {
+                deque.addLast(i);
+            } else if (operationIdx == 2) {
+                deque.removeFirst();
+            } else if (operationIdx == 3) {
+                deque.removeLast();
+            }
+        }
+    }
+
+    @Test
+    public void iteratorTest() {
+        LinkedListDeque<Integer> deque = new LinkedListDeque<>();
+
+        for (int i = 0; i < 10; i++) {
+            deque.addLast(i);
+        }
+
+        int idx = 0;
+        for (int i : deque) {
+            assertEquals(i, idx);
+            idx++;
+        }
+
+        while (!deque.isEmpty()) {
+            deque.removeFirst();
+        }
+
+        for (int i : deque) {
+            assertNull("Should return null", i);
+        }
+    }
+
+    @Test
+    public void equalsTest() {
+        LinkedListDeque<Integer> deque = new LinkedListDeque<>();
+
+        for (int i = 0; i < 10; i++) {
+            deque.addLast(i);
+        }
+
+        assertNotEquals(null, deque);
+        assertNotEquals("String Test", deque);
+
+        LinkedListDeque<Integer> deque2 = new LinkedListDeque<>();
+        for (int i = 0; i < 10; i++) {
+            deque2.addLast(i);
+        }
+        assertTrue(deque.equals(deque2));
     }
 }
