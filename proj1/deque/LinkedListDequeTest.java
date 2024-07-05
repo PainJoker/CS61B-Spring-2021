@@ -137,24 +137,6 @@ public class LinkedListDequeTest {
     }
 
     @Test
-    public void deepCopyTest() {
-        LinkedListDeque<Integer> deque = new LinkedListDeque<>();
-        deque.addFirst(1);
-        deque.addFirst(2);
-        deque.addLast(3);
-        LinkedListDeque<Integer> copyed = new LinkedListDeque<>(deque);
-        assertFalse(copyed.isEmpty());
-
-        while (!copyed.isEmpty()) {
-            int cItem = copyed.removeFirst();
-            int dItem = deque.removeFirst();
-            assertEquals(cItem, dItem);
-        }
-        assertEquals(0, deque.size());
-        assertEquals(0, copyed.size());
-    }
-
-    @Test
     public void randomTest() {
         LinkedListDeque<Integer> deque = new LinkedListDeque<>();
 

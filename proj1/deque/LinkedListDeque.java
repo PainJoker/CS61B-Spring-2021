@@ -12,18 +12,6 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
         sentinel.next = sentinel.prev;
     }
 
-    public LinkedListDeque(LinkedListDeque<T> other) {
-        size = 0;
-        sentinel = new Node<>(null, null, null);
-        sentinel.prev = sentinel;
-        sentinel.next = sentinel.prev;
-        Node<T> temp = other.sentinel;
-        while (temp.next != other.sentinel) {
-            addLast(temp.next.item);
-            temp = temp.next;
-        }
-    }
-
     @Override
     public int size() {
         return size;
@@ -148,7 +136,7 @@ public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
     private class LLDIterator implements Iterator<T> {
         private Node<T> wizard;
 
-        public LLDIterator() {
+        LLDIterator() {
             wizard = sentinel.next;
         }
 

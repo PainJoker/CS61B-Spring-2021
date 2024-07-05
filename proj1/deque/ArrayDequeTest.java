@@ -108,23 +108,6 @@ public class ArrayDequeTest {
     }
 
     @Test
-    public void deepCopyTest() {
-        ArrayDeque<Integer> deque = new ArrayDeque<>();
-        for (int i = 0; i < 40; i++) {
-            deque.addLast(i);
-        }
-        for (int i = 0; i < 40; i++) {
-            assertEquals(i, (double) deque.get(i), 0.0);
-        }
-        ArrayDeque<Integer> copyed = new ArrayDeque<>(deque);
-        for (int i = 0; i < 30; i++) {
-            int dequeResult = deque.removeFirst();
-            int copyedResult = copyed.removeFirst();
-            assertEquals(dequeResult, copyedResult);
-        }
-    }
-
-    @Test
     public void randomTest() {
         ArrayDeque<Integer> deque = new ArrayDeque<>();
 
