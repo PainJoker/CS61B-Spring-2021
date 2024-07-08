@@ -105,17 +105,17 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         if (o == null) {
             return false;
         }
-        if (this.getClass() != o.getClass()) {
+        if (!(o instanceof Deque)) {
             return false;
         }
-        if (size != ((ArrayDeque<?>) o).size()) {
+        if (size != ((Deque<?>) o).size()) {
             return false;
         }
-        if (size != ((ArrayDeque<?>) o).size()) {
+        if (size != ((Deque<?>) o).size()) {
             return false;
         }
         for (int i = 0; i < size; i++) {
-            if (!this.get(i).equals(((ArrayDeque<?>) o).get(i))) {
+            if (!this.get(i).equals(((Deque<?>) o).get(i))) {
                 return false;
             }
         }
@@ -154,20 +154,23 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
     private class ADIterator implements Iterator<T> {
         private int wizard;
+        private int sizeTracker;
 
         ADIterator() {
             wizard = frontIndex();
+            sizeTracker = size;
         }
 
         @Override
         public boolean hasNext() {
-            return wizard < nextRear;
+            return sizeTracker > 0;
         }
 
         @Override
         public T next() {
             T val = get(wizard);
             wizard = (wizard + 1) % array.length;
+            sizeTracker--;
             return val;
         }
     }

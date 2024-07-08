@@ -5,7 +5,7 @@ import java.util.Comparator;
 import static org.junit.Assert.*;
 
 public class MaxArrayDequeTest {
-    public static class AlwaysItem1 implements Comparator {
+    public static class AlwaysGreater implements Comparator {
         @Override
         public int compare(Object o1, Object o2) {
             return 1;
@@ -19,15 +19,22 @@ public class MaxArrayDequeTest {
         }
     }
 
+    public static class StringComparator implements Comparator<String> {
+        @Override
+        public int compare(String d1, String d2) {
+            return d1.compareTo(d2);
+        }
+    }
+
     @Test
     public void alwaysItem1Test() {
-        AlwaysItem1 alwaysItem1 = new AlwaysItem1();
-        MaxArrayDeque<Integer> testArray = new MaxArrayDeque<>(alwaysItem1);
+        AlwaysGreater alwaysGreater = new AlwaysGreater();
+        MaxArrayDeque<Integer> testArray = new MaxArrayDeque<>(alwaysGreater);
 
         for (int i = 0; i < 50; i++) {
             testArray.addLast(i);
         }
-        assertEquals(0, (int) testArray.max());
+        assertEquals(49, (int) testArray.max());
     }
 
     @Test
@@ -39,5 +46,16 @@ public class MaxArrayDequeTest {
             testArray.addLast(i);
         }
         assertEquals(49, (int) testArray.max());
+    }
+
+    @Test
+    public void stringComparatorTest() {
+        StringComparator sc = new StringComparator();
+        MaxArrayDeque<String> testArray = new MaxArrayDeque<>(sc);
+        testArray.addLast("a");
+        testArray.addLast("b");
+        testArray.addLast("c");
+
+        assertEquals("c", testArray.max());
     }
 }
