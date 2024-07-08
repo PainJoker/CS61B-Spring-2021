@@ -10,7 +10,7 @@ public class MaxArrayDeque<T> extends ArrayDeque<T> {
         comparator = c;
     }
 
-    public T max (Comparator<T> c) {
+    public T max(Comparator<T> c) {
         if (size() == 0) {
             return null;
         }

@@ -157,7 +157,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         private int sizeTracker;
 
         ADIterator() {
-            wizard = frontIndex();
+            wizard = 0;
             sizeTracker = size;
         }
 
