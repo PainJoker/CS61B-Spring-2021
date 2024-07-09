@@ -154,7 +154,6 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
     private class ADIterator implements Iterator<T> {
         private int wizard;
-        private int sizeTracker;
 
         ADIterator() {
             wizard = 0;
