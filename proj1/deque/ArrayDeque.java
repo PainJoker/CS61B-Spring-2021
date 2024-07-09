@@ -158,19 +158,17 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
         ADIterator() {
             wizard = 0;
-            sizeTracker = size;
         }
 
         @Override
         public boolean hasNext() {
-            return sizeTracker > 0;
+            return wizard < size;
         }
 
         @Override
         public T next() {
             T val = get(wizard);
             wizard = (wizard + 1) % array.length;
-            sizeTracker--;
             return val;
         }
     }
