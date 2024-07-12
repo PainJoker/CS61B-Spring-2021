@@ -10,23 +10,10 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     private BSTMap<K, V> left;
     private BSTMap<K, V> right;
 
-    public BSTMap(K key, V value) {
-        map = new MapNode<>(key, value);
-        this.left = null;
-        this.right = null;
-    }
     public BSTMap() {
         map = null;
         left = null;
         right = null;
-    }
-
-    public BSTMap<K, V> getLeft() {
-        return left;
-    }
-
-    public BSTMap<K, V> getRight() {
-        return right;
     }
 
     @Override
@@ -63,9 +50,9 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         if (cmp == 0) {
             return tree.map.getValue();
         } else if (cmp < 0) {
-            return getRecursive(tree.getLeft(), key);
+            return getRecursive(tree.left, key);
         } else {
-            return getRecursive(tree.getRight(), key);
+            return getRecursive(tree.right, key);
         }
     }
 
@@ -99,7 +86,12 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         throw new UnsupportedOperationException("Not supported in lab7.");
     }
 
-    public void print() {
+    public void printInOrder() {
+        /* Actual debug function, printInOrder is not implemented.*/
+        print();
+    }
+
+    private void print() {
         printRecursive(this, 0);
     }
 
@@ -111,13 +103,15 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
             System.out.print("  ");
         }
         System.out.println(tree.map.getKey().toString());
-        printRecursive(tree.getLeft(), indent + 1);
-        printRecursive(tree.getRight(), indent + 1);
+        printRecursive(tree.left, indent + 1);
+        printRecursive(tree.right, indent + 1);
     }
 
     private BSTMap<K, V> putRecursive(BSTMap<K, V> tree, K key, V value) {
         if (tree == null) {
-            return new BSTMap<>(key, value);
+            tree = new BSTMap<>();
+            tree.map = new MapNode<>(key, value);
+            return tree;
         }
         if (tree.map == null) {
             tree.map = new MapNode<>(key, value);
@@ -142,9 +136,9 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         if (cmp == 0) {
             return true;
         } else if (cmp < 0) {
-            return containsKeyRecursive(tree.getLeft(), key);
+            return containsKeyRecursive(tree.left, key);
         } else {
-            return containsKeyRecursive(tree.getRight(), key);
+            return containsKeyRecursive(tree.right, key);
         }
     }
 

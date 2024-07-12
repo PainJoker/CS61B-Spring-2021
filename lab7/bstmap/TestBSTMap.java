@@ -93,16 +93,12 @@ public class TestBSTMap {
     public void intializeTest() {
         BSTMap<String, Integer> b = new BSTMap<String, Integer>();
         assertEquals(0, b.size());
-        assertNull(b.getLeft());
-        assertNull(b.getRight());
 
-        BSTMap<String, Integer> a = new BSTMap<>("hi", 1);
+        BSTMap<String, Integer> a = new BSTMap<>();
+        a.put("hi", 1);
         assertEquals(1, a.size());
         assertTrue(a.containsKey("hi"));
-        assertNull(a.getLeft());
-        assertNull(a.getRight());
 
-        a.print();
     }
 
     @Test
@@ -111,13 +107,13 @@ public class TestBSTMap {
         b.put(1, 1);
         b.put(2, 2);
         b.put(3, 3);
-        b.print();
+        b.printInOrder();
 
         BSTMap<Integer, Integer> a = new BSTMap<>();
         a.put(5, 5);
         a.put(3, 1);
         a.put(10, 8);
-        a.print();
+        a.printInOrder();
     }
 
 }
