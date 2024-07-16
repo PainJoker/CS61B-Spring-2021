@@ -158,4 +158,12 @@ public class TestMyHashMap {
         assertEquals(345, studentIDs.get("evil alan").intValue());
         assertEquals(studentIDs.get("evil alan"), studentIDs.get("alan"));
     }
+
+    @Test
+    public void initialCapacityTest() {
+        MyHashMap<Integer, Integer> dictionary = new MyHashMap<>(16);
+        assertEquals(0, dictionary.size());
+        dictionary.put(1, 1);
+        assertEquals(1, dictionary.size());
+    }
 }
