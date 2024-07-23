@@ -1,26 +1,135 @@
 package gitlet;
 
-// TODO: any imports you need here
+import java.io.File;
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.TreeMap;
 
-import java.util.Date; // TODO: You'll likely use this in this class
+
+import static gitlet.Repository.COMMITS_DIR;
+import static gitlet.Utils.*;
 
 /** Represents a gitlet commit object.
- *  TODO: It's a good idea to give a description here of what else this Class
  *  does at a high level.
  *
- *  @author TODO
+ *  @author PainJoker
  */
-public class Commit {
+public class Commit implements Serializable {
     /**
-     * TODO: add instance variables here.
-     *
-     * List all instance variables of the Commit class here with a useful
-     * comment above them describing what that variable represents and how that
-     * variable is used. We've provided one example for `message`.
+     * Date format of commit.
+     * source: Java SimpleDateFormat - Java Date Format on Digital Ocean
      */
+    private static final String pattern = "E MMM dd hh:mm:ss yyyy Z";
+
+    /** Data formatter. */
+    private static final SimpleDateFormat formatter = new SimpleDateFormat(pattern);
 
     /** The message of this Commit. */
-    private String message;
+    private final String message;
 
-    /* TODO: fill in the rest of this class. */
+    /**
+     * The time stamp of a commit
+     * initially with 00:00:00 UTC, Thursday, 1 January 1970 (the "Unix" epoch)
+     */
+    private final String date;
+
+    /** the SHA-1 of one commit. */
+    private final String uid;
+
+    /** the SHA-1 of parent commit. */
+    private final String parentUid;
+
+    /** the branch of this commit. */
+    private final String branch;
+
+    /**
+     * store the mapping between staged file and its corresponding SHA-1
+     */
+    private final TreeMap<String, String> files;
+
+   public Commit() {
+       date = formatter.format(new Date(0));
+       this.parentUid = "";
+       branch = "master";
+       files = new TreeMap<>();
+       this.message = "initial commit";
+       uid = sha1(this.date, this.message, this.parentUid, this.branch, serialize(this.files));
+   }
+
+   public Commit(String message, String parentUid, HashMap<String, String> staged) {
+       this.message = message;
+       this.parentUid = parentUid;
+       Commit parent = getCommit(parentUid);
+       branch = parent.getBranch();
+       files = parent.getFiles();
+       for (String file : staged.keySet()) {
+           if (files.containsKey(file)) {
+               files.replace(file, staged.get(file));
+           } else {
+               files.put(file, staged.get(file));
+           }
+       }
+       date = formatter.format(new Date());
+       uid = sha1(this.date, this.message, this.parentUid, this.branch, serialize(this.files));
+   }
+
+    /**
+     * Retrieve Commit object from its uid.
+     * @param commitUid String
+     * @return Commit object
+     */
+    public static Commit getCommit(String commitUid) {
+        File commitPath = join(COMMITS_DIR, commitUid);
+        return readObject(commitPath, Commit.class);
+    }
+
+    public boolean isInitialCommit() {
+        return parentUid.isEmpty();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("===\n");
+        sb.append("commit " );
+        sb.append(uid);
+        sb.append("\n");
+        sb.append("Date: ");
+        sb.append(date);
+        sb.append("\n");
+        sb.append(message);
+        sb.append("\n");
+        return sb.toString();
+    }
+
+   /** Move commit to the COMMIT_DIR. */
+   public void store() {
+       writeObject(new File(COMMITS_DIR, uid), this);
+   }
+
+   public String getMessage() {
+       return message;
+   }
+
+   public String getDate() {
+       return date;
+   }
+
+   public String getUid() {
+       return uid;
+   }
+
+   public String getParentUid() {
+       return parentUid;
+   }
+
+   public String getBranch() {
+       return branch;
+   }
+
+   public TreeMap<String, String> getFiles() {
+       return files;
+   }
 }
