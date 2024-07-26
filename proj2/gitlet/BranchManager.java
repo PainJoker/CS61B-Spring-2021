@@ -15,7 +15,7 @@ import static gitlet.Utils.*;
  * @author PainJoker
  */
 public class BranchManager {
-    public static TreeSet<String> branches;
+    private static TreeSet<String> branches;
 
     public static void setBranches() {
         branches = new TreeSet<>();
@@ -77,8 +77,8 @@ public class BranchManager {
      * @return Commit object
      */
     public static Commit getBranchCommit(String branch) {
-        String CommitUid = getCommitUid(branch);
-        return getCommit(CommitUid);
+        String commitUid = getCommitUid(branch);
+        return getCommit(commitUid);
     }
 
     /**
@@ -107,7 +107,7 @@ public class BranchManager {
     }
 
     public static void showBranches() {
-        TreeSet<String> branches = getBranches();
+        branches = getBranches();
         System.out.println("=== Branches ===");
         for (String branch : branches) {
             if (branch.equals(getHeadBranch())) {
@@ -125,13 +125,13 @@ public class BranchManager {
     }
 
     private static void removeBranch(String branchName) {
-        TreeSet<String> branches = getBranches();
+        branches = getBranches();
         branches.remove(branchName);
         writeObject(BRANCH_FILE, branches);
     }
 
     private static void addBranch(String branchName) {
-        TreeSet<String> branches = getBranches();
+        branches = getBranches();
         branches.add(branchName);
         writeObject(BRANCH_FILE, branches);
     }

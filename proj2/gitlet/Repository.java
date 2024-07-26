@@ -18,7 +18,19 @@ public class Repository {
     public static final File CWD = new File(System.getProperty("user.dir"));
 
     /** The .gitlet directory.
-     * TODO: show .gitlet structure
+     * .gitlet
+     *     |--objects
+     *     |    |--blobs
+     *     |    |   |--staged
+     *     |    |   |--(stored Blobs)
+     *     |    |--commits
+     *     |    |--stats
+     *     |    |   |--staged(file)
+     *     |    |   |--remove(file)
+     *     |--refs
+     *     |    |--branches(file)
+     *     |    |--(stored branches)
+     *     |--HEAD(file)
      */
     public static final File GITLET_DIR = join(CWD, ".gitlet");
     public static final File OBJECTS_DIR = join(GITLET_DIR, "objects");
@@ -41,8 +53,8 @@ public class Repository {
 
     public static void init() {
         if (isInitialized()) {
-            System.out.println("A Gitlet version-control system already exists " +
-                    "in the current directory.");
+            System.out.println("A Gitlet version-control system already exists "
+                    + "in the current directory.");
             System.exit(0);
         }
         createRepo();
@@ -58,7 +70,7 @@ public class Repository {
             } else if (BufferManager.stagedContainsFile(blob)) {
                 BufferManager.unstage(blob);
             }
-        } else if (isStored(blob)){
+        } else if (isStored(blob)) {
             BufferManager.addStage(blob);
         } else {
             BufferManager.stageWithOverride(blob);
@@ -200,12 +212,12 @@ public class Repository {
      */
     public static void reset(String commitUid) {
         Commit targetCommit = getCommit(commitUid);
-       checkUntrackedFiles();
-       String currentBranch = BranchManager.getHeadBranch();
-       BranchManager.moveBranch(currentBranch, targetCommit.getUid());
-       clearCWD();
-       release(targetCommit);
-       BufferManager.clearArea();
+        checkUntrackedFiles();
+        String currentBranch = BranchManager.getHeadBranch();
+        BranchManager.moveBranch(currentBranch, targetCommit.getUid());
+        clearCWD();
+        release(targetCommit);
+        BufferManager.clearArea();
     }
 
     public static void showStatus() {
@@ -220,14 +232,7 @@ public class Repository {
         Commit currentCommit = BranchManager.getHeadCommit();
         Commit mergingCommit = BranchManager.getBranchCommit(branchName);
         Commit splitCommit = getLatestCommonCommit(currentCommit, mergingCommit);
-        if (splitCommit.getUid().equals(mergingCommit.getUid())) {
-            System.out.println("Given branch is an ancestor of the current branch.");
-            System.exit(0);
-        } else if (splitCommit.getUid().equals(currentCommit.getUid())) {
-            checkoutBranch(branchName);
-            System.out.println("Current branch fast-forwarded.");
-            System.exit(0);
-        }
+        checkMergeCommitCondition(branchName, splitCommit, mergingCommit, currentCommit);
         HashSet<String> checkoutFiles = new HashSet<>();
         boolean encounterConflict = false;
         TreeMap<String, String> filesInSplit = splitCommit.getFiles();
@@ -266,9 +271,7 @@ public class Repository {
                 continue;
             }
             if (headBlob.getUid().equals(splitBlob.getUid())) {
-                String fileInSplitUid = filesInSplit.get(fileInSplit);
-                stageChanged(fileInSplit, fileInSplitUid);
-                checkoutFiles.add(fileInSplit);
+                stageChange(fileInSplit, filesInSplit.get(fileInSplit), checkoutFiles);
                 filesInMerging.remove(fileInSplit);
                 continue;
             }
@@ -282,9 +285,7 @@ public class Repository {
         }
         for (String fileInMerging : filesInMerging.keySet()) {
             if (!filesInHead.containsKey(fileInMerging)) {
-                String fileInMergingUid = filesInMerging.get(fileInMerging);
-                stageChanged(fileInMerging, fileInMergingUid);
-                checkoutFiles.add(fileInMerging);
+                stageChange(fileInMerging, filesInMerging.get(fileInMerging), checkoutFiles);
                 continue;
             }
             Blob headBlob = readObject(join(BLOBS_DIR, filesInHead.get(fileInMerging)), Blob.class);
@@ -305,9 +306,25 @@ public class Repository {
         }
     }
 
-    private static void stageChanged(String file, String fileUid) {
+    private static void checkMergeCommitCondition(String branchName, Commit splitCommit,
+                                                 Commit mergingCommit, Commit currentCommit) {
+        if (splitCommit.getUid().equals(mergingCommit.getUid())) {
+            System.out.println("Given branch is an ancestor of the current branch.");
+            System.exit(0);
+        } else if (splitCommit.getUid().equals(currentCommit.getUid())) {
+            checkoutBranch(branchName);
+            System.out.println("Current branch fast-forwarded.");
+            System.exit(0);
+        }
+    }
+
+    private static void stageChange(String file, String fileUid, HashSet<String> checkoutFiles) {
         Blob stageBlob = readObject(join(BLOBS_DIR, fileUid), Blob.class);
         BufferManager.addStage(stageBlob);
+        checkoutFiles.add(file);
+    }
+
+    private static void stageChanged(String file, String fileUid) {
     }
 
     private static void stageConflict(Blob headBlob, Blob mergeBlob) {
@@ -451,20 +468,18 @@ public class Repository {
 
     private static void checkUntrackedFiles() {
         if (existUntrackedFiles()) {
-            System.out.println("There is an untracked file in the way; " +
-                    "delete it, or add and commit it first.");
+            System.out.println("There is an untracked file in the way; "
+                    + "delete it, or add and commit it first.");
             System.exit(0);
         }
     }
 
     private static void showModified() {
-        // TODO: implement to find modifications
         System.out.println("=== Modifications Not Staged For Commit ===");
         System.out.println();
     }
 
     private static void showUntracked() {
-        // TODO: implement to find untracks
         System.out.println("=== Untracked Files ===");
         System.out.println();
     }
@@ -500,8 +515,8 @@ public class Repository {
 
     /** Construct .git directory */
     private static void createRepo() {
-        if (!COMMITS_DIR.mkdirs() || !STAGED_DIR.mkdirs() ||
-                !REF_DIR.mkdirs() || !STATS_DIR.mkdirs()) {
+        if (!COMMITS_DIR.mkdirs() || !STAGED_DIR.mkdirs()
+                || !REF_DIR.mkdirs() || !STATS_DIR.mkdirs()) {
             throw new RuntimeException("Could not create repositories.");
         }
         BranchManager.setBranches();

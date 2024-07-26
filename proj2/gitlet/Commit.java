@@ -20,10 +20,10 @@ public class Commit implements Serializable {
      * Date format of commit.
      * source: Java SimpleDateFormat - Java Date Format on Digital Ocean
      */
-    private static final String pattern = "E MMM dd hh:mm:ss yyyy Z";
+    private static final String PATTERN = "E MMM dd hh:mm:ss yyyy Z";
 
     /** Data formatter. */
-    private static final SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat(PATTERN);
 
     /** The message of this Commit. */
     private final String message;
@@ -46,36 +46,36 @@ public class Commit implements Serializable {
     /** merged parent, may be null. */
     private final String secondParentUid;
 
-   public Commit() {
-       date = formatter.format(new Date(0));
-       this.parentUid = EMPTY_PARENT;
-       this.secondParentUid = EMPTY_PARENT;
-       files = new TreeMap<>();
-       this.message = "initial commit";
-       uid = sha1(this.date, this.message, this.parentUid, serialize(this.files));
-   }
+    public Commit() {
+        date = FORMATTER.format(new Date(0));
+        this.parentUid = EMPTY_PARENT;
+        this.secondParentUid = EMPTY_PARENT;
+        files = new TreeMap<>();
+        this.message = "initial commit";
+        uid = sha1(this.date, this.message, this.parentUid, serialize(this.files));
+    }
 
-   public Commit(String message, String parentUid, String secondParentUid,
+    public Commit(String message, String parentUid, String secondParentUid,
                  TreeMap<String, String> staged, TreeSet<String> removed) {
-       this.message = message;
-       this.parentUid = parentUid;
-       this.secondParentUid = secondParentUid;
+        this.message = message;
+        this.parentUid = parentUid;
+        this.secondParentUid = secondParentUid;
 
-       Commit parent = getCommit(parentUid);
-       files = parent.getFiles();
-       for (String file : removed) {
-           files.remove(file);
-       }
-       for (String file : staged.keySet()) {
-           if (files.containsKey(file)) {
-               files.replace(file, staged.get(file));
-           } else {
-               files.put(file, staged.get(file));
-           }
-       }
-       date = formatter.format(new Date());
-       uid = sha1(this.date, this.message, this.parentUid, serialize(this.files));
-   }
+        Commit parent = getCommit(parentUid);
+        files = parent.getFiles();
+        for (String file : removed) {
+            files.remove(file);
+        }
+        for (String file : staged.keySet()) {
+            if (files.containsKey(file)) {
+                files.replace(file, staged.get(file));
+            } else {
+                files.put(file, staged.get(file));
+            }
+        }
+        date = FORMATTER.format(new Date());
+        uid = sha1(this.date, this.message, this.parentUid, serialize(this.files));
+    }
 
     /**
      * Retrieve Commit object from its uid.
@@ -103,7 +103,7 @@ public class Commit implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("===\n");
-        sb.append("commit " );
+        sb.append("commit ");
         sb.append(uid);
         sb.append("\n");
         if (isMerged()) {
@@ -121,36 +121,36 @@ public class Commit implements Serializable {
         return sb.toString();
     }
 
-   /** Move commit to the COMMIT_DIR. */
-   public void store() {
-       writeObject(new File(COMMITS_DIR, uid), this);
-   }
+    /** Move commit to the COMMIT_DIR. */
+    public void store() {
+        writeObject(new File(COMMITS_DIR, uid), this);
+    }
 
-   public String getMessage() {
-       return message;
-   }
+    public String getMessage() {
+        return message;
+    }
 
-   public String getDate() {
-       return date;
-   }
+    public String getDate() {
+        return date;
+    }
 
-   public String getUid() {
-       return uid;
-   }
+    public String getUid() {
+        return uid;
+    }
 
-   public String getParentUid() {
-       return parentUid;
-   }
+    public String getParentUid() {
+        return parentUid;
+    }
 
-   public String getSecondParentUid() {
-       return secondParentUid;
-   }
+    public String getSecondParentUid() {
+        return secondParentUid;
+    }
 
-   public TreeMap<String, String> getFiles() {
-       return files;
-   }
+    public TreeMap<String, String> getFiles() {
+        return files;
+    }
 
-   private boolean isMerged() {
-       return !EMPTY_PARENT.equals(secondParentUid);
-   }
+    private boolean isMerged() {
+        return !EMPTY_PARENT.equals(secondParentUid);
+    }
 }
