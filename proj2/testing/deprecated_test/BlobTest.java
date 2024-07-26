@@ -1,4 +1,4 @@
-package testing.student_tests;
+package testing.deprecated_test;
 
 import gitlet.Blob;
 import org.junit.Test;

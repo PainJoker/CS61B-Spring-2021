@@ -33,16 +33,60 @@ public class Main {
                 break;
             case "checkout":
                 Repository.checkRepoInitialized();
-                if (args.length == 3) {
+                if (args.length == 3 && args[1].equals("--")) {
                     Repository.checkoutFile(args[2]);
-                } else if (args.length == 4) {
+                } else if (args.length == 4 && args[2].equals("--")) {
                     Repository.checkoutFileInCommit(args[1], args[3]);
+                } else if (args.length == 2) {
+                    Repository.checkoutBranch(args[1]);
+                } else {
+                    System.out.println("Incorrect operands.");
                 }
                 break;
             case "log":
                 Repository.checkRepoInitialized();
                 validateNumArgs(args, 1);
                 Repository.log();
+                break;
+            case "rm":
+                Repository.checkRepoInitialized();
+                validateNumArgs(args, 2);
+                Repository.remove(args[1]);
+                break;
+            case "global-log":
+                Repository.checkRepoInitialized();
+                validateNumArgs(args, 1);
+                Repository.globalLog();
+                break;
+            case "find":
+                Repository.checkRepoInitialized();
+                validateNumArgs(args, 2);
+                Repository.find(args[1]);
+                break;
+            case "branch":
+                Repository.checkRepoInitialized();
+                validateNumArgs(args, 2);
+                Repository.attachBranch(args[1]);
+                break;
+            case "rm-branch":
+                Repository.checkRepoInitialized();
+                validateNumArgs(args, 2);
+                Repository.rmBranch(args[1]);
+                break;
+            case "status":
+                Repository.checkRepoInitialized();
+                validateNumArgs(args, 1);
+                Repository.showStatus();
+                break;
+            case "reset":
+                Repository.checkRepoInitialized();
+                validateNumArgs(args, 2);
+                Repository.reset(args[1]);
+                break;
+            case "merge":
+                Repository.checkRepoInitialized();
+                validateNumArgs(args, 2);
+                Repository.merge(args[1]);
                 break;
             default:
                 System.out.println("No command with that name exists.");
