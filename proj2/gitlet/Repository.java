@@ -243,8 +243,8 @@ public class Repository {
                 continue;
             }
             if (!filesInHead.containsKey(fileInSplit) && filesInMerging.containsKey(fileInSplit)) {
-                Blob splitBlob = readObject(join(BLOBS_DIR, filesInSplit.get(fileInSplit)), Blob.class);
-                Blob mergeBlob = readObject(join(BLOBS_DIR, filesInMerging.get(fileInSplit)), Blob.class);
+                Blob splitBlob = getBlob(filesInSplit.get(fileInSplit));
+                Blob mergeBlob = getBlob(filesInMerging.get(fileInSplit));
                 if (!mergeBlob.getUid().equals(splitBlob.getUid())) {
                     stageConflict(null, mergeBlob);
                     encounterConflict = true;
@@ -253,8 +253,8 @@ public class Repository {
                 continue;
             }
             if (filesInHead.containsKey(fileInSplit) && !filesInMerging.containsKey(fileInSplit)) {
-                Blob splitBlob = readObject(join(BLOBS_DIR, filesInSplit.get(fileInSplit)), Blob.class);
-                Blob headBlob = readObject(join(BLOBS_DIR, filesInHead.get(fileInSplit)), Blob.class);
+                Blob splitBlob = getBlob(filesInSplit.get(fileInSplit));
+                Blob headBlob = getBlob(filesInHead.get(fileInSplit));
                 if (!headBlob.getUid().equals(splitBlob.getUid())) {
                     stageConflict(headBlob, null);
                     encounterConflict = true;
@@ -263,9 +263,9 @@ public class Repository {
                 }
                 continue;
             }
-            Blob splitBlob = readObject(join(BLOBS_DIR, filesInSplit.get(fileInSplit)), Blob.class);
-            Blob headBlob = readObject(join(BLOBS_DIR, filesInHead.get(fileInSplit)), Blob.class);
-            Blob mergeBlob = readObject(join(BLOBS_DIR, filesInMerging.get(fileInSplit)), Blob.class);
+            Blob splitBlob = getBlob(filesInSplit.get(fileInSplit));
+            Blob headBlob = getBlob(filesInHead.get(fileInSplit));
+            Blob mergeBlob = getBlob(filesInMerging.get(fileInSplit));
             if (mergeBlob.getUid().equals(splitBlob.getUid())) {
                 filesInMerging.remove(fileInSplit);
                 continue;
@@ -288,14 +288,15 @@ public class Repository {
                 stageChange(fileInMerging, filesInMerging.get(fileInMerging), checkoutFiles);
                 continue;
             }
-            Blob headBlob = readObject(join(BLOBS_DIR, filesInHead.get(fileInMerging)), Blob.class);
-            Blob mergeBlob = readObject(join(BLOBS_DIR, filesInMerging.get(fileInMerging)), Blob.class);
+            Blob headBlob = getBlob(filesInHead.get(fileInMerging));
+            Blob mergeBlob = getBlob(filesInMerging.get(fileInMerging));
             if (!mergeBlob.getUid().equals(headBlob.getUid())) {
                 stageConflict(headBlob, mergeBlob);
                 encounterConflict = true;
             }
         }
-        String mergedMessage = "Merged " + branchName + " into " + BranchManager.getHeadBranch() + ".";
+        String mergedMessage = "Merged " + branchName
+                + " into " + BranchManager.getHeadBranch() + ".";
         String mergingCommitUid = mergingCommit.getUid();
         commitHandleMerge(mergedMessage, mergingCommitUid);
         for (String file : checkoutFiles) {
@@ -316,6 +317,10 @@ public class Repository {
             System.out.println("Current branch fast-forwarded.");
             System.exit(0);
         }
+    }
+
+    private static Blob getBlob(String blobUid) {
+        return readObject(join(BLOBS_DIR, blobUid), Blob.class);
     }
 
     private static void stageChange(String file, String fileUid, HashSet<String> checkoutFiles) {

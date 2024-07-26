@@ -19,8 +19,8 @@ import static java.nio.file.Files.move;
  * @author PainJoker
  */
 public class BufferManager {
-    public static TreeMap<String, String> staged;
-    public static TreeSet<String> removed;
+    private static TreeMap<String, String> staged;
+    private static TreeSet<String> removed;
 
     public static void setBuffer() {
         staged = new TreeMap<>();
@@ -39,7 +39,7 @@ public class BufferManager {
     public static void unstage(Blob blob) {
         File stagedBlob = new File(STAGED_DIR, blob.getFileName());
         if (!stagedBlob.delete()) {
-            throw new RuntimeException("Failed to delete staged file: " + stagedBlob.getAbsolutePath());
+            throw new RuntimeException();
         }
         removeStage(blob);
     }
@@ -165,7 +165,7 @@ public class BufferManager {
         for (String file : Objects.requireNonNull(plainFilenamesIn(STAGED_DIR))) {
             File stagedFile = join(STAGED_DIR, file);
             if (!stagedFile.delete()) {
-                throw new RuntimeException("Failed to delete staged file: " + stagedFile.getAbsolutePath());
+                throw new RuntimeException();
             }
         }
         clearStageTrack();
